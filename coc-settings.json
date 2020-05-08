@@ -1,5 +1,10 @@
 {
-  "coc.preferences.formatOnSaveFiletypes": ["typescript, html, css"],
-  "tslint.autoFixOnSave": true,
-  "prettier.tslintIntegration": true
+  "coc.preferences.formatOnSaveFiletypes": [
+    "typescript",
+    "typescriptreact",
+    "html",
+    "css"
+  ],
+  "eslint.run": "onSave",
+  "eslint.autoFixOnSave": true
 }
