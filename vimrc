@@ -4,6 +4,7 @@ syntax on
 
 let mapleader=' '
 
+set termguicolors
 set tabstop=2       " number of visual spaces per TAB
 set softtabstop=2   " number of spaces in tab when editing
 set shiftwidth=2
@@ -42,12 +43,27 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'leafgarland/typescript-vim'
+Plug 'yuezk/vim-js'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'maxmellon/vim-jsx-pretty'
 Plug 'arcticicestudio/nord-vim'
+Plug 'lifepillar/vim-colortemplate'
+Plug 'morhetz/gruvbox'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'nathanaelkane/vim-indent-guides'
 
 call plug#end()
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
+au BufRead,BufNewFile *.ts   setfiletype typescript
+
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
 
 inoremap <silent><expr> <TAB>
   \ pumvisible() ? "\<C-n>" :
@@ -78,6 +94,24 @@ endfunction
 
 command! -nargs=0 Format :call CocAction('format')
 
+function! s:buflist()
+  redir => ls
+  silent ls
+  redir END
+  return split(ls, '\n')
+endfunction
+
+function! s:bufopen(e)
+  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
+endfunction
+
+nnoremap <silent> <Leader><Enter> :call fzf#run({
+\   'source':  reverse(<sid>buflist()),
+\   'sink':    function('<sid>bufopen'),
+\   'options': '+m',
+\   'down':    len(<sid>buflist()) + 2
+\ })<CR>
+
 " Add Vims native statusline support.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
@@ -91,4 +125,18 @@ nnoremap <silent> <leader>i :exe "vertical resize -10"<CR>
 
 let g:vim_airline_theme = 'nord'
 
-colorscheme nord
+nnoremap <leader>a :call SyntaxAttr()<CR>
+nnoremap <leader>e :source ~/.vim/vimrc<CR>
+
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
+
+let g:gruvbox_italic=1
+
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_auto_colors = 0
+hi IndentGuidesOdd guibg=#1e202e
+hi IndentGuidesEven guibg=NONE
+
+" colorscheme gruvbox
+colorscheme tokyonight
